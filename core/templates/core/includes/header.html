@@ -1,0 +1,29 @@
+{% load static %}
+<header class="site-header">
+    <div class="container header-inner">
+        <a class="brand" href="{% url 'questions:index' %}">AskRu</a>
+        <form action="{% url 'questions:index' %}" class="search" role="search">
+            <label class="visually-hidden" for="search">Поиск вопросов</label>
+            <input id="search" name="q" placeholder="Поиск" value="{{ query }}" type="search">
+            <button aria-label="Искать" type="submit">Найти</button>
+        </form>
+        <a class="btn btn-success ask-button" href="{% url 'questions:ask' %}">Задать вопрос</a>
+        {% if profile_page %}
+        <div class="user-block">
+            <img alt="Аватар автора" class="avatar" height="56" src="{% static 'core/img/avatar-0.svg' %}" width="56">
+            <div>
+                <strong>Иван Васильев</strong>
+                <div>
+                    <a href="{% url 'core:profile' %}">Настройки</a>
+                    <a href="{% url 'core:login' %}">Выйти</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="guest-links">
+            <a href="{% url 'core:login' %}">Войти</a>
+            <a class="signup-link" href="{% url 'core:signup' %}">Регистрация</a>
+        </div>
+        {% endif %}
+    </div>
+</header>

@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{ question.title }}{% endblock %}
+{% block content %}
+<article class="question-detail">
+    <div class="author-column">
+        <img class="avatar" src="{% static question.author.avatar %}" alt="{{ question.author.name }}" width="56" height="56">
+        {% include 'questions/includes/vote.html' with rating=question.rating %}
+    </div>
+    <div>
+        <h1>{{ question.title }}</h1>
+        <p>{{ question.text }}</p>
+        <p class="meta">{{ question.author.name }} · <time datetime="{{ question.created_at|date:'c' }}">{{ question.created_at|date:'d.m.Y H:i' }}</time></p>
+        {% include 'questions/includes/tags.html' %}
+    </div>
+</article>
+<div class="page-heading" id="answers"><h2>Ответов: {{ question.answers_count }}</h2></div>
+{% for answer in page %}
+    {% include 'questions/includes/answer.html' %}
+{% empty %}
+    <p>Ответов пока нет.</p>
+{% endfor %}
+{% include 'core/includes/pagination.html' %}
+<section class="reply">
+    <h2>Ваш ответ</h2>
+    <form class="editor-form" method="post" novalidate>
+        {% csrf_token %}
+        <div class="alert alert-danger" role="alert" hidden></div>
+        <div class="field-row">
+            <label for="answer">Ответ</label>
+            <div>
+                <textarea class="form-control" id="answer" name="answer" rows="7" maxlength="5000" required aria-describedby="answer-hint"></textarea>
+                <div class="form-text" id="answer-hint">До 5000 символов.</div>
+            </div>
+        </div>
+        <div class="form-action">
+            <button class="btn btn-success" type="submit">Отправить ответ</button>
+            <p class="form-result" role="status"></p>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,18 @@
+<aside class="sidebar" aria-label="Сообщество">
+    <section>
+        <h2>Популярные теги</h2>
+        <div class="tag-cloud">
+            {% for tag in popular_tags %}
+                <a class="tag" href="{% url 'questions:tag' tag %}">{{ tag }}</a>
+            {% endfor %}
+        </div>
+    </section>
+    <section>
+        <h2>Лучшие участники</h2>
+        <ol class="members">
+            {% for member in best_members %}
+                <li>{{ member }}</li>
+            {% endfor %}
+        </ol>
+    </section>
+</aside>

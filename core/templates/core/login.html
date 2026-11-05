@@ -1,0 +1,31 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+
+<h1>Вход</h1>
+<form class="editor-form" method="post" novalidate>
+    {% csrf_token %}
+    <div class="alert alert-danger" role="alert">Неверный логин или пароль. Попробуйте ещё раз.</div>
+    <div class="field-row">
+        <label for="login">Логин</label>
+        <div>
+            <input aria-describedby="login-hint" class="form-control" id="login" maxlength="150" name="login" required type="text" value="">
+            <div class="form-text" id="login-hint">Введите ваш логин.</div>
+        </div>
+    </div>
+    <div class="field-row">
+        <label for="password">Пароль</label>
+        <div>
+            <input aria-describedby="password-hint" class="form-control" id="password" maxlength="150" minlength="8" name="password" required type="password" value="">
+            <div class="form-text" id="password-hint">Не менее 8 символов.</div>
+        </div>
+    </div>
+    <div class="form-action">
+        <button class="btn btn-success" type="submit">Войти</button>
+        <a class="registration-link" href="{% url 'core:signup' %}">Создать аккаунт</a>
+        <p class="form-result" role="status"></p>
+    </div>
+</form>
+
+{% endblock %}

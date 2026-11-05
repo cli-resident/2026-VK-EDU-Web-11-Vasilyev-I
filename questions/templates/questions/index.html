@@ -1,0 +1,9 @@
+{% extends 'core/base.html' %}
+{% block title %}Новые вопросы{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <h1>{% if query %}Поиск: {{ query }}{% else %}Новые вопросы{% endif %}</h1>
+    <a href="{% url 'questions:hot' %}">Популярные вопросы</a>
+</div>
+{% include 'questions/includes/list.html' %}
+{% endblock %}

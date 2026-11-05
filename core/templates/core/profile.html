@@ -1,0 +1,50 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Настройки профиля{% endblock %}
+{% block content %}
+
+<h1>Настройки профиля</h1>
+<form class="editor-form" method="post" novalidate>
+    {% csrf_token %}
+    <div class="alert alert-danger" hidden role="alert"></div>
+    <div class="field-row">
+        <label for="login">Логин</label>
+        <div>
+            <input aria-describedby="login-hint" class="form-control" id="login" maxlength="150" name="login" required type="text" value="ivan">
+            <div class="form-text" id="login-hint"></div>
+        </div>
+    </div>
+    <div class="field-row">
+        <label for="email">Email</label>
+        <div>
+            <input aria-describedby="email-hint" class="form-control" id="email" maxlength="150" name="email" required type="email" value="ivan@example.com">
+            <div class="form-text" id="email-hint"></div>
+        </div>
+    </div>
+    <div class="field-row">
+        <label for="nickname">Имя</label>
+        <div>
+            <input aria-describedby="nickname-hint" class="form-control" id="nickname" maxlength="150" name="nickname" required type="text" value="Иван Васильев">
+            <div class="form-text" id="nickname-hint"></div>
+        </div>
+    </div>
+    <div class="field-row">
+        <span>Текущий аватар</span>
+        <div>
+            <img alt="Аватар автора" class="avatar" height="56" src="{% static 'core/img/avatar-0.svg' %}" width="56">
+        </div>
+    </div>
+    <div class="field-row">
+        <label for="avatar">Новый аватар</label>
+        <div>
+            <input accept="image/*" aria-describedby="avatar-hint" class="form-control" id="avatar" name="avatar" type="file" value="">
+            <div class="form-text" id="avatar-hint">Выберите изображение для профиля.</div>
+        </div>
+    </div>
+    <div class="form-action">
+        <button class="btn btn-success" type="submit">Сохранить изменения</button>
+        <p class="form-result" role="status"></p>
+    </div>
+</form>
+
+{% endblock %}
