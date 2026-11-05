@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <meta content="AskRu — сообщество вопросов и ответов" name="description">
+        <title>Новые вопросы — AskRu</title>
+        <link href="static/img/favicon.svg" rel="icon" type="image/svg+xml">
+        <link href="static/css/bootstrap.min.css" rel="stylesheet">
+        <link href="static/css/style.css?v=askru" rel="stylesheet">
+        <script defer src="static/js/app.js"></script>
+    </head>
+    <body>
+        <a class="skip-link" href="#main">К содержимому</a>
+        <header class="site-header">
+            <div class="container header-inner">
+                <a class="brand" href="index.html">AskRu</a>
+                <form action="index.html" class="search" role="search">
+                    <label class="visually-hidden" for="search">Поиск вопросов</label>
+                    <input id="search" name="q" placeholder="Поиск" type="search">
+                    <button aria-label="Искать" type="submit">Найти</button>
+                </form>
+                <a class="btn btn-success ask-button" href="ask.html">Задать вопрос</a>
+                <div class="guest-links">
+                    <a href="login.html">Войти</a>
+                    <a class="signup-link" href="signup.html">Регистрация</a>
+                </div>
+            </div>
+        </header>
+        <div class="container page-grid">
+            <main id="main">
+                <div class="page-heading">
+                    <h1>Новые вопросы</h1>
+                    <a href="hot.html">Популярные вопросы</a>
+                </div>
+                <article class="question-card">
+                    <div class="author-column">
+                        <img alt="Аватар автора" class="avatar" height="56" src="static/img/avatar-0.svg" width="56">
+                        <div aria-label="Оценка" class="vote">
+                            <button aria-label="Нравится" aria-pressed="false" data-vote="1" type="button">+</button>
+                            <output>12</output>
+                            <button aria-label="Не нравится" aria-pressed="false" data-vote="-1" type="button">−</button>
+                        </div>
+                    </div>
+                    <div class="question-content">
+                        <h2>
+                            <a href="question.html">Как верифицировать аккаунт anthropic?</a>
+                        </h2>
+                        <p>я сидел вайбкодил трекер привычек, но мне прилетела верификация, что делать?</p>
+                        <div class="meta">
+                            <span>
+                                Иван Васильев ·
+                                <time datetime="2026-11-05">5 ноября 2026</time>
+                            </span>
+                        </div>
+                        <div class="card-bottom">
+                            <a href="question.html#answers">2 ответа</a>
+                            <span>
+                                <a class="tag" href="tag.html">python</a>
+                                <a class="tag" href="tag.html">django</a>
+                                <a class="tag" href="tag.html">javascript</a>
+                            </span>
+                        </div>
+                    </div>
+                </article>
+                <article class="question-card">
+                    <div class="author-column">
+                        <img alt="Аватар автора" class="avatar" height="56" src="static/img/avatar-1.svg" width="56">
+                        <div aria-label="Оценка" class="vote">
+                            <button aria-label="Нравится" aria-pressed="true" data-vote="1" type="button">+</button>
+                            <output>8</output>
+                            <button aria-label="Не нравится" aria-pressed="false" data-vote="-1" type="button">−</button>
+                        </div>
+                    </div>
+                    <div class="question-content">
+                        <h2>
+                            <a href="question.html">Как верифицировать аккаунт anthropic?</a>
+                        </h2>
+                        <p>я сидел вайбкодил трекер привычек, но мне прилетела верификация, что делать?</p>
+                        <div class="meta">
+                            <span>
+                                Анна Смирнова ·
+                                <time datetime="2026-11-05">5 ноября 2026</time>
+                            </span>
+                        </div>
+                        <div class="card-bottom">
+                            <a href="question.html#answers">3 ответа</a>
+                            <span>
+                                <a class="tag" href="tag.html">python</a>
+                                <a class="tag" href="tag.html">django</a>
+                                <a class="tag" href="tag.html">javascript</a>
+                            </span>
+                        </div>
+                    </div>
+                </article>
+                <article class="question-card">
+                    <div class="author-column">
+                        <img alt="Аватар автора" class="avatar" height="56" src="static/img/avatar-2.svg" width="56">
+                        <div aria-label="Оценка" class="vote">
+                            <button aria-label="Нравится" aria-pressed="false" data-vote="1" type="button">+</button>
+                            <output>3</output>
+                            <button aria-label="Не нравится" aria-pressed="true" data-vote="-1" type="button">−</button>
+                        </div>
+                    </div>
+                    <div class="question-content">
+                        <h2>
+                            <a href="question.html">Как верифицировать аккаунт anthropic?</a>
+                        </h2>
+                        <p>я сидел вайбкодил трекер привычек, но мне прилетела верификация, что делать?</p>
+                        <div class="meta">
+                            <span>
+                                Алексей Петров ·
+                                <time datetime="2026-11-05">5 ноября 2026</time>
+                            </span>
+                        </div>
+                        <div class="card-bottom">
+                            <a href="question.html#answers">4 ответа</a>
+                            <span>
+                                <a class="tag" href="tag.html">python</a>
+                                <a class="tag" href="tag.html">django</a>
+                                <a class="tag" href="tag.html">javascript</a>
+                            </span>
+                        </div>
+                    </div>
+                </article>
+                <nav aria-label="Страницы">
+                    <ul class="pagination">
+                        <li class="page-item active">
+                            <a aria-current="page" class="page-link" href="?page=1">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=2">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=3">3</a>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">…</span>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=12">12</a>
+                        </li>
+                    </ul>
+                </nav>
+            </main>
+            <aside aria-label="Сообщество" class="sidebar">
+                <section>
+                    <h2>Популярные теги</h2>
+                    <div class="tag-cloud">
+                        <a class="tag tag-0" href="tag.html">python</a>
+                        <a class="tag tag-1" href="tag.html">django</a>
+                        <a class="tag tag-2" href="tag.html">javascript</a>
+                        <a class="tag tag-0" href="tag.html">bootstrap</a>
+                        <a class="tag tag-1" href="tag.html">web</a>
+                        <a class="tag tag-2" href="tag.html">css</a>
+                        <a class="tag tag-0" href="tag.html">html</a>
+                        <a class="tag tag-1" href="tag.html">postgresql</a>
+                    </div>
+                </section>
+                <section>
+                    <h2>Лучшие участники</h2>
+                    <ol class="members">
+                        <li>Иван Васильев</li>
+                        <li>Анна Смирнова</li>
+                        <li>Алексей Петров</li>
+                        <li>Мария Иванова</li>
+                        <li>Дмитрий Соколов</li>
+                    </ol>
+                </section>
+            </aside>
+        </div>
+        <footer class="site-footer">
+            <div class="container">AskRu · 2026</div>
+        </footer>
+    </body>
+</html>
