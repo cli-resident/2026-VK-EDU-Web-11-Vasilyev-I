@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <meta content="AskRu — сообщество вопросов и ответов" name="description">
+        <title>Как верифицировать аккаунт anthropic? — AskRu</title>
+        <link href="static/img/favicon.svg" rel="icon" type="image/svg+xml">
+        <link href="static/css/bootstrap.min.css" rel="stylesheet">
+        <link href="static/css/style.css?v=askru" rel="stylesheet">
+        <script defer src="static/js/app.js"></script>
+    </head>
+    <body>
+        <a class="skip-link" href="#main">К содержимому</a>
+        <header class="site-header">
+            <div class="container header-inner">
+                <a class="brand" href="index.html">AskRu</a>
+                <form action="index.html" class="search" role="search">
+                    <label class="visually-hidden" for="search">Поиск вопросов</label>
+                    <input id="search" name="q" placeholder="Поиск" type="search">
+                    <button aria-label="Искать" type="submit">Найти</button>
+                </form>
+                <a class="btn btn-success ask-button" href="ask.html">Задать вопрос</a>
+                <div class="guest-links">
+                    <a href="login.html">Войти</a>
+                    <a class="signup-link" href="signup.html">Регистрация</a>
+                </div>
+            </div>
+        </header>
+        <div class="container page-grid">
+            <main id="main">
+                <article class="question-detail">
+                    <div class="author-column">
+                        <img alt="Аватар автора" class="avatar" height="56" src="static/img/avatar-0.svg" width="56">
+                        <div aria-label="Оценка" class="vote">
+                            <button aria-label="Нравится" aria-pressed="false" data-vote="1" type="button">+</button>
+                            <output>12</output>
+                            <button aria-label="Не нравится" aria-pressed="false" data-vote="-1" type="button">−</button>
+                        </div>
+                    </div>
+                    <div>
+                        <h1>Как верифицировать аккаунт anthropic?</h1>
+                        <p>я сидел вайбкодил трекер привычек, но мне прилетела верификация, что делать?</p>
+                        <p class="meta">
+                            Иван Васильев ·
+                            <time datetime="2026-11-05">5 ноября 2026</time>
+                        </p>
+                        <a class="tag" href="tag.html">python</a>
+                        <a class="tag" href="tag.html">django</a>
+                        <a class="tag" href="tag.html">javascript</a>
+                    </div>
+                </article>
+                <div class="page-heading" id="answers">
+                    <h2>2 ответа</h2>
+                </div>
+                <article class="question-card answer">
+                    <div class="author-column">
+                        <img alt="Аватар автора" class="avatar" height="56" src="static/img/avatar-1.svg" width="56">
+                        <div aria-label="Оценка" class="vote">
+                            <button aria-label="Нравится" aria-pressed="false" data-vote="1" type="button">+</button>
+                            <output>7</output>
+                            <button aria-label="Не нравится" aria-pressed="false" data-vote="-1" type="button">−</button>
+                        </div>
+                    </div>
+                    <div>
+                        <p>Что именно написано в сообщении о верификации?</p>
+                        <p class="meta">
+                            Анна Смирнова ·
+                            <time datetime="2026-11-05">5 ноября 2026</time>
+                        </p>
+                        <label class="correct">
+                            <input checked class="form-check-input" type="checkbox">
+                            Правильный ответ
+                        </label>
+                    </div>
+                </article>
+                <article class="question-card answer">
+                    <div class="author-column">
+                        <img alt="Аватар автора" class="avatar" height="56" src="static/img/avatar-2.svg" width="56">
+                        <div aria-label="Оценка" class="vote">
+                            <button aria-label="Нравится" aria-pressed="false" data-vote="1" type="button">+</button>
+                            <output>4</output>
+                            <button aria-label="Не нравится" aria-pressed="false" data-vote="-1" type="button">−</button>
+                        </div>
+                    </div>
+                    <div>
+                        <p>У меня такого не было. Если разберёшься, напиши здесь, чем закончилось.</p>
+                        <p class="meta">
+                            Алексей Петров ·
+                            <time datetime="2026-11-05">5 ноября 2026</time>
+                        </p>
+                        <label class="correct">
+                            <input class="form-check-input" type="checkbox">
+                            Правильный ответ
+                        </label>
+                    </div>
+                </article>
+                <nav aria-label="Страницы">
+                    <ul class="pagination">
+                        <li class="page-item active">
+                            <a aria-current="page" class="page-link" href="?page=1">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=2">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=3">3</a>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">…</span>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=12">12</a>
+                        </li>
+                    </ul>
+                </nav>
+                <section class="reply">
+                    <h2>Ваш ответ</h2>
+                    <form class="editor-form" novalidate>
+                        <div class="alert alert-danger" hidden role="alert"></div>
+                        <div class="field-row">
+                            <label for="answer">Ответ</label>
+                            <div>
+                                <textarea aria-describedby="answer-hint" class="form-control" id="answer" maxlength="5000" name="answer" required rows="7"></textarea>
+                                <div class="form-text" id="answer-hint">Поделитесь решением или полезной идеей.</div>
+                            </div>
+                        </div>
+                        <div class="form-action">
+                            <button class="btn btn-success" type="submit">Отправить ответ</button>
+                            <p class="form-result" role="status"></p>
+                        </div>
+                    </form>
+                </section>
+            </main>
+            <aside aria-label="Сообщество" class="sidebar">
+                <section>
+                    <h2>Популярные теги</h2>
+                    <div class="tag-cloud">
+                        <a class="tag tag-0" href="tag.html">python</a>
+                        <a class="tag tag-1" href="tag.html">django</a>
+                        <a class="tag tag-2" href="tag.html">javascript</a>
+                        <a class="tag tag-0" href="tag.html">bootstrap</a>
+                        <a class="tag tag-1" href="tag.html">web</a>
+                        <a class="tag tag-2" href="tag.html">css</a>
+                        <a class="tag tag-0" href="tag.html">html</a>
+                        <a class="tag tag-1" href="tag.html">postgresql</a>
+                    </div>
+                </section>
+                <section>
+                    <h2>Лучшие участники</h2>
+                    <ol class="members">
+                        <li>Иван Васильев</li>
+                        <li>Анна Смирнова</li>
+                        <li>Алексей Петров</li>
+                        <li>Мария Иванова</li>
+                        <li>Дмитрий Соколов</li>
+                    </ol>
+                </section>
+            </aside>
+        </div>
+        <footer class="site-footer">
+            <div class="container">AskRu · 2026</div>
+        </footer>
+    </body>
+</html>
