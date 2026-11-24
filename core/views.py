@@ -1,14 +1,42 @@
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.views.decorators.http import require_POST
+
+from .forms import LoginForm, ProfileForm, SignupForm
 
 
-def login(request: HttpRequest) -> HttpResponse:
-    return render(request, 'core/login.html')
+class Login(LoginView):
+    template_name = 'core/login.html'
+    authentication_form = LoginForm
+    next_page = 'questions:index'
+    redirect_authenticated_user = True
 
 
-def signup(request: HttpRequest) -> HttpResponse:
-    return render(request, 'core/signup.html')
+def signup(request):
+    form = SignupForm(request.POST if request.method == 'POST' else None, request.FILES or None)
+    if request.method == 'POST' and form.is_valid():
+        auth_login(request, form.save())
+        return redirect('questions:index')
+    return render(request, 'core/signup.html', {'form': form})
 
 
-def profile(request: HttpRequest) -> HttpResponse:
-    return render(request, 'core/profile.html', {'profile_page': True})
+@login_required
+def profile(request):
+    form = ProfileForm(request.POST if request.method == 'POST' else None, request.FILES or None, instance=request.user)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect('core:profile')
+    return render(request, 'core/profile.html', {'form': form})
+
+
+@require_POST
+def logout(request):
+    destination = request.POST.get('next', '/')
+    if not url_has_allowed_host_and_scheme(destination, {request.get_host()}, require_https=request.is_secure()):
+        destination = reverse('questions:index')
+    auth_logout(request)
+    return redirect(destination)

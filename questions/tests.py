@@ -75,3 +75,55 @@ class FillTests(TestCase):
             self.assertEqual(Answer.objects.count(), 200 * multiplier)
             self.assertEqual(Tag.objects.count(), 2 * multiplier)
             self.assertEqual(QuestionLike.objects.count() + AnswerLike.objects.count(), 400 * multiplier)
+
+
+class FormsTests(TestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user('owner', password='Good-password-913')
+        self.other = User.objects.create_user('other', password='Good-password-913')
+        Profile.objects.create(user=self.owner)
+        Profile.objects.create(user=self.other)
+        self.question = Question.objects.create(title='Вопрос', text='Текст', author=self.owner)
+        self.answer = Answer.objects.create(question=self.question, author=self.other, text='Ответ')
+
+    def test_question_and_answer(self):
+        self.assertEqual(self.client.get('/ask/').status_code, 302)
+        self.client.force_login(self.owner)
+        response = self.client.post('/ask/', {'title': 'Новый вопрос', 'text': 'Подробности', 'tags': 'python, django, css, html'})
+        self.assertTrue(response.context['form'].errors)
+        response = self.client.post('/ask/', {'title': 'Новый вопрос', 'text': 'Подробности', 'tags': 'python, django'})
+        created = Question.objects.get(title='Новый вопрос')
+        self.assertRedirects(response, created.get_absolute_url())
+        self.assertEqual(created.tags.count(), 2)
+        Answer.objects.bulk_create([Answer(question=self.question, author=self.owner, text='Старый ответ', rating=1) for _ in range(31)])
+        response = self.client.post(self.question.get_absolute_url(), {'text': 'Последний ответ'})
+        answer = Answer.objects.get(text='Последний ответ')
+        self.assertRedirects(response, answer.get_absolute_url())
+        self.assertIn('?page=2#answer-', response.url)
+
+    def test_votes_and_permissions(self):
+        url = f'/vote/question/{self.question.pk}/'
+        self.assertEqual(self.client.post(url, {'value': 1}).status_code, 401)
+        self.client.force_login(self.other)
+        self.assertEqual(self.client.get(url).status_code, 405)
+        self.assertEqual(self.client.post(url, {'value': 7}).status_code, 400)
+        for value, expected in [(1, 1), (1, 0), (-1, -1), (1, 1)]:
+            self.assertEqual(self.client.post(url, {'value': value}).json()['rating'], expected)
+        self.assertContains(self.client.get(self.question.get_absolute_url()), 'aria-pressed="true"')
+        answer_url = f'/vote/answer/{self.answer.pk}/'
+        self.assertEqual(self.client.post(answer_url, {'value': -1}).json()['rating'], -1)
+        data = {'question_id': self.question.pk, 'answer_id': self.answer.pk}
+        self.assertEqual(self.client.post('/answer/correct/', data).status_code, 400)
+        self.client.force_login(self.owner)
+        self.assertEqual(self.client.post('/answer/correct/', data).json()['answer_id'], self.answer.pk)
+        second = Answer.objects.create(question=self.question, author=self.other, text='Второй')
+        data['answer_id'] = second.pk
+        self.client.post('/answer/correct/', data)
+        self.assertEqual(Answer.objects.filter(question=self.question, correct=True).count(), 1)
+        self.assertIsNone(self.client.post('/answer/correct/', data).json()['answer_id'])
+
+    def test_csrf(self):
+        from django.test import Client
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.owner)
+        self.assertEqual(client.post(f'/vote/question/{self.question.pk}/', {'value': 1}).status_code, 403)

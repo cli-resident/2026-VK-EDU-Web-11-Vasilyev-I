@@ -5,7 +5,7 @@
 <article class="question-detail">
     <div class="author-column">
         <img class="avatar" src="{{ question.author.profile.avatar_url }}" alt="{{ question.author.profile }}" width="56" height="56">
-        {% include 'questions/includes/vote.html' with rating=question.rating %}
+        {% include 'questions/includes/vote.html' with target=question kind='question' %}
     </div>
     <div>
         <h1>{{ question.title }}</h1>
@@ -21,4 +21,15 @@
     <p>Ответов пока нет.</p>
 {% endfor %}
 {% include 'core/includes/pagination.html' %}
+{% if user.is_authenticated %}
+<section class="reply">
+    <h2>Ваш ответ</h2>
+    <form class="editor-form" method="post" novalidate>
+        {% include 'core/includes/form.html' %}
+        <button class="btn btn-success" type="submit">Отправить ответ</button>
+    </form>
+</section>
+{% else %}
+<p><a href="{% url 'core:login' %}?next={{ request.get_full_path|urlencode }}">Войдите, чтобы ответить.</a></p>
+{% endif %}
 {% endblock %}

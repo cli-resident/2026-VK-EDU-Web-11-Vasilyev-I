@@ -24,4 +24,4 @@ class Profile(models.Model):
 
     @property
     def avatar_url(self) -> str:
-        return self.avatar.url if self.avatar else static('core/img/avatar-0.svg')
+        return self.avatar.url if self.avatar else static('core/img/avatar-default.svg')

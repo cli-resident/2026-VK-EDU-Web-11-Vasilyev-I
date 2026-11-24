@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, OuterRef, Subquery
 from django.urls import reverse
 
 
@@ -19,6 +19,12 @@ class Tag(models.Model):
 class QuestionQuerySet(models.QuerySet):
     def for_display(self):
         return self.select_related('author__profile').prefetch_related('tags')
+
+    def with_vote(self, user):
+        if not user.is_authenticated:
+            return self
+        votes = QuestionLike.objects.filter(question_id=OuterRef('pk'), user=user)
+        return self.annotate(selected_vote=Subquery(votes.values('value')[:1]))
 
     def newest(self):
         return self.for_display().order_by('-created_at', '-id')
@@ -56,6 +62,12 @@ class Question(models.Model):
 
 
 class AnswerQuerySet(models.QuerySet):
+    def with_vote(self, user):
+        if not user.is_authenticated:
+            return self
+        votes = AnswerLike.objects.filter(answer_id=OuterRef('pk'), user=user)
+        return self.annotate(selected_vote=Subquery(votes.values('value')[:1]))
+
     def for_question(self, question: Question):
         return self.filter(question=question).select_related('author__profile').order_by('-rating', 'created_at', 'id')
 
@@ -77,6 +89,13 @@ class Answer(models.Model):
 
     def __str__(self) -> str:
         return self.text[:80]
+
+    def get_absolute_url(self) -> str:
+        preceding = Answer.objects.filter(question_id=self.question_id).filter(
+            Q(rating__gt=self.rating) | Q(rating=self.rating, created_at__lt=self.created_at)
+            | Q(rating=self.rating, created_at=self.created_at, id__lt=self.pk)
+        ).count()
+        return f'{self.question.get_absolute_url()}?page={preceding // 30 + 1}#answer-{self.pk}'
 
 
 class QuestionLike(models.Model):

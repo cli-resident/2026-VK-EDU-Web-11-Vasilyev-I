@@ -1,25 +1,10 @@
-{% extends "core/base.html" %}
-{% load static %}
+{% extends 'core/base.html' %}
 {% block title %}Вход{% endblock %}
 {% block content %}
-
 <h1>Вход</h1>
-<form class="editor-form" method="post" novalidate>
-    {% csrf_token %}
-    <div class="alert alert-danger" role="alert">Неверный логин или пароль. Попробуйте ещё раз.</div>
-    <div class="field-row">
-        <label for="login">Логин</label>
-        <div>
-            <input aria-describedby="login-hint" class="form-control" id="login" maxlength="150" name="login" required type="text" value="">
-            <div class="form-text" id="login-hint">Введите ваш логин.</div>
-        </div>
-    </div>
-    {% include "core/includes/password.html" %}
-    <div class="form-action">
-        <button class="btn btn-success" type="submit">Войти</button>
-        <a class="registration-link" href="{% url 'core:signup' %}">Создать аккаунт</a>
-        <p class="form-result" role="status"></p>
-    </div>
+<form class="editor-form" method="post" enctype="multipart/form-data" novalidate>
+<input type="hidden" name="next" value="{{ next }}">
+    {% include 'core/includes/form.html' %}
+    <div class="form-action"><button class="btn btn-success" type="submit">Войти</button><a href="{% url 'core:signup' %}">Создать аккаунт</a></div>
 </form>
-
 {% endblock %}

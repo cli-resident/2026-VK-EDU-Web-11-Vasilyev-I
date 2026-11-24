@@ -1,12 +1,12 @@
 {% load static %}
-<article class="question-card answer">
+<article class="question-card answer" id="answer-{{ answer.pk }}">
     <div class="author-column">
         <img class="avatar" src="{{ answer.author.profile.avatar_url }}" alt="{{ answer.author.profile }}" width="56" height="56">
-        {% include 'questions/includes/vote.html' with rating=answer.rating %}
+        {% include 'questions/includes/vote.html' with target=answer kind='answer' %}
     </div>
     <div>
         <p>{{ answer.text }}</p>
         <p class="meta">{{ answer.author.profile }} · <time datetime="{{ answer.created_at|date:'c' }}">{{ answer.created_at|date:'d.m.Y H:i' }}</time></p>
-        <label class="correct"><input type="checkbox" class="form-check-input" disabled {% if answer.correct %}checked{% endif %}> Правильный ответ</label>
+        {% if user.pk == question.author_id %}<label class="correct"><input type="checkbox" class="form-check-input" data-answer="{{ answer.pk }}" data-question="{{ question.pk }}" data-url="{% url 'questions:correct_answer' %}" {% if answer.correct %}checked{% endif %}> Правильный ответ</label>{% elif answer.correct %}<span>Правильный ответ</span>{% endif %}
     </div>
 </article>
