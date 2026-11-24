@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <meta content="AskRu — сообщество вопросов и ответов" name="description">
+        <title>Базовый макет — AskRu</title>
+        <link href="static/img/favicon.svg" rel="icon" type="image/svg+xml">
+        <link href="static/css/bootstrap.min.css" rel="stylesheet">
+        <link href="static/css/style.css?v=askru" rel="stylesheet">
+        <script defer src="static/js/app.js"></script>
+    </head>
+    <body>
+        <a class="skip-link" href="#main">К содержимому</a>
+        <header class="site-header">
+            <div class="container header-inner">
+                <a class="brand" href="index.html">AskRu</a>
+                <form action="index.html" class="search" role="search">
+                    <label class="visually-hidden" for="search">Поиск вопросов</label>
+                    <input id="search" name="q" placeholder="Поиск" type="search">
+                    <button aria-label="Искать" type="submit">Найти</button>
+                </form>
+                <a class="btn btn-success ask-button" href="ask.html">Задать вопрос</a>
+                <div class="guest-links">
+                    <a href="login.html">Войти</a>
+                    <a class="signup-link" href="signup.html">Регистрация</a>
+                </div>
+            </div>
+        </header>
+        <div class="container page-grid">
+            <main id="main">
+                <h1>Вопросы и ответы</h1>
+                <p class="intro">Сайт вопросов и ответов.</p>
+                <a class="btn btn-success" href="index.html">Перейти к вопросам</a>
+            </main>
+            <aside aria-label="Сообщество" class="sidebar">
+                <section>
+                    <h2>Популярные теги</h2>
+                    <div class="tag-cloud">
+                        <a class="tag tag-0" href="tag.html">python</a>
+                        <a class="tag tag-1" href="tag.html">django</a>
+                        <a class="tag tag-2" href="tag.html">javascript</a>
+                        <a class="tag tag-0" href="tag.html">bootstrap</a>
+                        <a class="tag tag-1" href="tag.html">web</a>
+                        <a class="tag tag-2" href="tag.html">css</a>
+                        <a class="tag tag-0" href="tag.html">html</a>
+                        <a class="tag tag-1" href="tag.html">postgresql</a>
+                    </div>
+                </section>
+                <section>
+                    <h2>Лучшие участники</h2>
+                    <ol class="members">
+                        <li>Иван Васильев</li>
+                        <li>Анна Смирнова</li>
+                        <li>Алексей Петров</li>
+                        <li>Мария Иванова</li>
+                        <li>Дмитрий Соколов</li>
+                    </ol>
+                </section>
+            </aside>
+        </div>
+        <footer class="site-footer">
+            <div class="container">AskRu · 2026</div>
+        </footer>
+    </body>
+</html>
