@@ -49,8 +49,29 @@ for (const answer of answers) {
 const forms = document.querySelectorAll('.editor-form');
 
 for (const form of forms) {
+    const result = form.querySelector('.form-result');
+    const error = form.querySelector('.alert');
+    const fields = form.querySelectorAll('input, textarea');
+
+    for (const field of fields) {
+        const message = document.createElement('div');
+        message.id = field.id + '-error';
+        message.className = 'invalid-feedback';
+        message.hidden = true;
+        field.insertAdjacentElement('afterend', message);
+        const description = field.getAttribute('aria-describedby') || '';
+        field.setAttribute('aria-describedby', (description + ' ' + message.id).trim());
+    }
+
     form.addEventListener('input', function (event) {
+        result.textContent = '';
+        error.hidden = true;
         const input = event.target;
+        const message = document.getElementById(input.id + '-error');
+        if (message) {
+            message.textContent = '';
+            message.hidden = true;
+        }
         input.classList.remove('is-invalid');
         input.removeAttribute('aria-invalid');
         input.setCustomValidity('');
@@ -65,7 +86,7 @@ for (const form of forms) {
     form.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        const error = form.querySelector('.alert');
+        result.textContent = '';
         const password = form.elements.password;
         const repeatPassword = form.elements.confirm;
         const tags = form.elements.tags;
@@ -91,11 +112,20 @@ for (const form of forms) {
             }
         }
 
+        for (const field of fields) {
+            const message = document.getElementById(field.id + '-error');
+            const invalid = !field.validity.valid;
+            field.classList.toggle('is-invalid', invalid);
+            field.setAttribute('aria-invalid', String(invalid));
+            message.textContent = invalid ? field.validationMessage : '';
+            message.hidden = !invalid;
+        }
+
         if (!form.checkValidity()) {
             const invalidInput = form.querySelector(':invalid');
             error.textContent = 'Проверьте заполнение полей. ' + invalidInput.validationMessage;
             error.hidden = false;
-            form.reportValidity();
+            invalidInput.focus();
             return;
         }
 
