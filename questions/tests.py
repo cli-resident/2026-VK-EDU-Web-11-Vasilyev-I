@@ -1,85 +1,77 @@
-from django.test import RequestFactory, SimpleTestCase
-from django.urls import reverse
+from io import StringIO
 
-from core.pagination import paginate
-from .data import questions
+from django.contrib.auth.models import User
+from django.core.management import call_command
+from django.db import IntegrityError, transaction
+from django.test import TestCase, override_settings
+
+from core.models import Profile
+from questions.models import Answer, AnswerLike, Question, QuestionLike, Tag
 
 
-class PagesTests(SimpleTestCase):
-    def test_pages_open(self) -> None:
-        pages = [('questions:index', []), ('questions:hot', []), ('questions:tag', ['python']), ('questions:question', [35]), ('questions:ask', []), ('core:login', []), ('core:signup', []), ('core:profile', [])]
-        for name, args in pages:
-            with self.subTest(name=name):
-                response = self.client.get(reverse(name, args=args))
-                self.assertEqual(response.status_code, 200)
-                self.assertContains(response, 'AskRu')
+@override_settings(DEBUG=False)
+class PagesTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user('ivan')
+        Profile.objects.create(user=cls.user)
+        cls.tag = Tag.objects.create(name='python')
+        for number in range(25):
+            question = Question.objects.create(title=f'Вопрос {number}', text='Текст вопроса', author=cls.user, rating=number)
+            question.tags.add(cls.tag)
 
-    def test_pages_have_different_questions(self) -> None:
-        first = self.client.get(reverse('questions:index'))
-        second = self.client.get(reverse('questions:index'), {'page': 2})
-        first_ids = {question['id'] for question in first.context['page']}
-        second_ids = {question['id'] for question in second.context['page']}
-        self.assertEqual(len(first_ids), 10)
-        self.assertEqual(len(second_ids), 10)
-        self.assertFalse(first_ids & second_ids)
-        for question_id in first_ids:
-            link = f'href="{reverse("questions:question", args=[question_id])}"'
-            self.assertContains(first, link)
-            self.assertNotContains(second, link)
-        for question_id in second_ids:
-            link = f'href="{reverse("questions:question", args=[question_id])}"'
-            self.assertContains(second, link)
-            self.assertNotContains(first, link)
+    def test_pagination_html(self):
+        first = self.client.get('/')
+        second = self.client.get('/', {'page': 2})
+        self.assertEqual(len(first.context['page']), 20)
+        self.assertEqual(len(second.context['page']), 5)
+        for question in first.context['page']:
+            self.assertContains(first, f'href="{question.get_absolute_url()}"')
+            self.assertNotContains(second, f'href="{question.get_absolute_url()}"')
 
-    def test_sorting(self) -> None:
-        response = self.client.get(reverse('questions:hot'))
-        ratings = [question['rating'] for question in response.context['page']]
+    def test_sorting_and_tag(self):
+        response = self.client.get('/hot/')
+        ratings = [question.rating for question in response.context['page']]
         self.assertGreater(len(ratings), 1)
         self.assertEqual(ratings, sorted(ratings, reverse=True))
-        response = self.client.get(reverse('questions:index'))
-        dates = [question['created_at'] for question in response.context['page']]
-        self.assertGreater(len(dates), 1)
-        self.assertEqual(dates, sorted(dates, reverse=True))
-
-    def test_tag_filter(self) -> None:
-        response = self.client.get(reverse('questions:tag', args=['python']))
+        response = self.client.get('/tag/python/')
         self.assertTrue(response.context['page'].object_list)
         for question in response.context['page']:
-            self.assertIn('python', question['tags'])
-        empty = self.client.get(reverse('questions:tag', args=['unknown']))
-        self.assertContains(empty, 'Вопросов не найдено.')
+            self.assertIn(self.tag, question.tags.all())
 
-    def test_question_and_answers(self) -> None:
-        response = self.client.get(reverse('questions:question', args=[1]), {'page': 2})
-        self.assertEqual(response.context['question']['id'], 1)
-        self.assertEqual(response.context['page'].number, 2)
-        self.assertEqual(len(response.context['page']), 10)
-        for answer in response.context['page']:
-            self.assertEqual(answer['question_id'], 1)
-        self.assertEqual(self.client.get(reverse('questions:question', args=[9999])).status_code, 404)
+    def test_missing_and_empty(self):
+        self.assertEqual(self.client.get('/question/999999/').status_code, 404)
+        self.assertEqual(self.client.get('/tag/unknown/').status_code, 404)
+        self.assertEqual(self.client.get('/question/abc/').status_code, 404)
+        Question.objects.all().delete()
+        self.assertContains(self.client.get('/'), 'Вопросов не найдено.')
 
-    def test_search_keeps_query_in_pagination(self) -> None:
-        response = self.client.get(reverse('questions:index'), {'q': 'шаблон'})
-        self.assertContains(response, '&amp;q=')
-        self.assertTrue(response.context['page'].object_list)
-        for question in response.context['page']:
-            self.assertIn('шаблон', (question['title'] + question['text']).lower())
-
-
-class PaginationTests(SimpleTestCase):
-    def test_invalid_page_numbers(self) -> None:
-        factory = RequestFactory()
-        for value in ['abc', '0', '-1', '9999', '1.5', '']:
+    def test_invalid_pages(self):
+        for value in ['abc', '-1', '0', '999999']:
             with self.subTest(value=value):
-                request = factory.get('/', {'page': value})
-                self.assertEqual(paginate(questions, request).number, 1)
+                self.assertEqual(self.client.get('/', {'page': value}).context['page'].number, 1)
 
-    def test_empty_list(self) -> None:
-        page = paginate([], RequestFactory().get('/'))
-        self.assertEqual(page.number, 1)
-        self.assertEqual(list(page), [])
+    def test_queries_do_not_grow(self):
+        with self.assertNumQueries(5):
+            self.client.get('/')
+        Question.objects.exclude(pk=Question.objects.first().pk).delete()
+        with self.assertNumQueries(5):
+            self.client.get('/')
 
-    def test_last_page(self) -> None:
-        page = paginate(questions, RequestFactory().get('/', {'page': 7}))
-        self.assertEqual(len(page), 5)
-        self.assertFalse(page.has_next())
+    def test_vote_constraint(self):
+        question = Question.objects.first()
+        QuestionLike.objects.create(user=self.user, question=question, value=1)
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            QuestionLike.objects.create(user=self.user, question=question, value=-1)
+
+
+class FillTests(TestCase):
+    def test_counts_and_repeat_run(self):
+        for multiplier in [1, 2]:
+            call_command('fill_db', 2, stdout=StringIO())
+            self.assertEqual(User.objects.count(), 2 * multiplier)
+            self.assertEqual(Profile.objects.count(), 2 * multiplier)
+            self.assertEqual(Question.objects.count(), 20 * multiplier)
+            self.assertEqual(Answer.objects.count(), 200 * multiplier)
+            self.assertEqual(Tag.objects.count(), 2 * multiplier)
+            self.assertEqual(QuestionLike.objects.count() + AnswerLike.objects.count(), 400 * multiplier)

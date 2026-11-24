@@ -1,41 +1,29 @@
-from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, render
 
 from core.pagination import paginate
-from .data import answers, questions
+from .models import Answer, Question, Tag
 
 
 def index(request: HttpRequest) -> HttpResponse:
-    question_list = sorted(questions, key=lambda question: question['created_at'], reverse=True)
     query = request.GET.get('q', '').strip()
-    if query:
-        question_list = [question for question in question_list if query.lower() in (question['title'] + question['text']).lower()]
-    return render(request, 'questions/index.html', {'page': paginate(question_list, request), 'query': query})
+    questions = Question.objects.newest().search(query)
+    return render(request, 'questions/index.html', {'page': paginate(questions, request, 20), 'query': query})
 
 
 def hot(request: HttpRequest) -> HttpResponse:
-    question_list = sorted(questions, key=lambda question: question['rating'], reverse=True)
-    return render(request, 'questions/hot.html', {'page': paginate(question_list, request)})
+    return render(request, 'questions/hot.html', {'page': paginate(Question.objects.best(), request, 20)})
 
 
 def tag(request: HttpRequest, tag_name: str) -> HttpResponse:
-    question_list = [question for question in questions if tag_name in question['tags']]
-    question_list.sort(key=lambda question: question['rating'], reverse=True)
-    return render(request, 'questions/tag.html', {'page': paginate(question_list, request), 'tag_name': tag_name})
+    tag = get_object_or_404(Tag, name=tag_name)
+    return render(request, 'questions/tag.html', {'page': paginate(Question.objects.with_tag(tag), request, 20), 'tag_name': tag.name})
 
 
 def question(request: HttpRequest, question_id: int) -> HttpResponse:
-    current_question = None
-    for candidate in questions:
-        if candidate['id'] == question_id:
-            current_question = candidate
-            break
-    if current_question is None:
-        raise Http404('Вопрос не найден')
-
-    answer_list = [answer for answer in answers if answer['question_id'] == question_id]
-    answer_list.sort(key=lambda answer: (-answer['rating'], answer['created_at']))
-    return render(request, 'questions/question.html', {'question': current_question, 'page': paginate(answer_list, request)})
+    question = get_object_or_404(Question.objects.for_display(), pk=question_id)
+    answers = Answer.objects.for_question(question)
+    return render(request, 'questions/question.html', {'question': question, 'page': paginate(answers, request, 30)})
 
 
 def ask(request: HttpRequest) -> HttpResponse:

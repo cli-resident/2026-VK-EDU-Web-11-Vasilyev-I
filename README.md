@@ -1,71 +1,55 @@
 # AskRu
 
-ДЗ2: Django, маршруты, шаблоны и пагинация. Данные хранятся в списках в `questions/data.py`, база пока не используется. Формы и голосование демонстрационные, изменения не сохраняются.
+Учебный сайт вопросов и ответов на Django и PostgreSQL.
 
 ## Локальный запуск
 
-Нужен Python 3.12 или новее.
-
-Windows PowerShell:
+Нужны Python 3.12 и PostgreSQL 17. Создайте базу askru и пользователя с доступом к ней.
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python -m pip install -r requirements.txt
-Copy-Item .env.example .env
-.\.venv\Scripts\python manage.py runserver
-```
-
-Linux / macOS:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-cp .env.example .env
+Copy-Item .env.example .env.local
+python manage.py migrate
+python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Открыть http://127.0.0.1:8000/. В `.env` задаются `SECRET_KEY`, `DEBUG` и `ALLOWED_HOSTS`. Для локального запуска достаточно настроек из примера. Миграции для ДЗ2 не нужны.
+Перед миграциями заполните в .env.local параметры своей базы и SECRET_KEY. Для тестов пользователь PostgreSQL должен иметь право CREATEDB.
 
-## Docker
+## Docker Compose
 
-Нужны Docker и Docker Compose. Скопировать `.env.example` в `.env`, затем:
+Скопируйте .env.example в .env.docker, задайте пароль и SECRET_KEY. Для контейнера укажите DB_HOST=db и DB_PORT=5432.
 
-```bash
-docker compose up --build
+```sh
+docker compose --env-file .env.docker up --build
+docker compose --env-file .env.docker exec web python manage.py createsuperuser
 ```
 
-Сайт доступен на http://localhost:8000/. Код подключён через volume, папка `media` хранится в отдельном volume. Остановить контейнеры: `docker compose down`.
+Миграции выполняются при запуске web. Данные БД и аватары сохраняются в volumes. Файлы окружения не коммитятся.
+
+## Тестовые данные
+
+```sh
+python manage.py fill_db 10001
+```
+
+Команда добавляет ratio пользователей и тегов, ratio * 10 вопросов, ratio * 100 ответов и ratio * 200 оценок. Использует Faker и bulk_create пакетами. Повторный запуск добавляет новую порцию. Минимальный ratio равен 2, иначе невозможно создать заданное число уникальных голосов. У тестовых пользователей отключён пароль.
 
 ## Страницы
 
-| Адрес | Страница |
-| --- | --- |
-| `/` | Новые вопросы |
-| `/hot/` | Популярные вопросы |
-| `/tag/python/` | Вопросы по тегу |
-| `/question/35/` | Вопрос и ответы |
-| `/ask/` | Создание вопроса |
-| `/login/` | Вход |
-| `/signup/` | Регистрация |
-| `/profile/` | Настройки профиля |
+- / - новые вопросы, поиск через q
+- /hot/ - популярные вопросы
+- /tag/<имя>/ - вопросы по тегу
+- /question/<id>/ - вопрос и ответы
+- /login/, /signup/, /profile/, /ask/ - формы
+- /admin/ - административная панель
 
-Пагинация: `/?page=2`. Для проверки ответов: `/question/1/?page=2`. Неверный номер заменяется первой страницей. Несуществующий вопрос возвращает 404. Поиск: `/?q=django`.
+Вопросы разбиты по 20, ответы по 30. Неизвестные объекты возвращают 404, неверный номер страницы заменяется на 1. В ДЗ 3 пользовательские страницы доступны только для чтения, изменение данных выполняется в админке.
 
-## Структура
-
-- `application/` — настройки и корневые маршруты;
-- `core/` — страницы пользователя, общий макет, статика и пагинация;
-- `questions/` — страницы вопросов, данные и шаблоны карточек;
-- `public/` — исходная статическая вёрстка ДЗ1;
-- `static/` — результат `collectstatic`, не хранится в Git;
-- `media/` — загруженные файлы, не хранится в Git.
-
-## Проверка
-
-```bash
-python manage.py check
+```sh
 python manage.py test
 ```
 
-В Windows без активации окружения использовать `.\.venv\Scripts\python` вместо `python`.
+Debug toolbar подключается только при DEBUG=True. Данные выбираются с select_related и prefetch_related. Исходная верстка ДЗ 1 находится в public.

@@ -7,3 +7,7 @@ venv
 media
 static
 public
+
+.env.*
+.local
+*.zip

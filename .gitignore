@@ -13,3 +13,7 @@ dist/
 .env
 /media/
 /static/
+
+.env.*
+!.env.example
+/.local/
