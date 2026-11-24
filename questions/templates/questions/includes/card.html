@@ -1,0 +1,16 @@
+{% load static %}
+<article class="question-card">
+    <div class="author-column">
+        <img class="avatar" src="{% static question.author.avatar %}" alt="{{ question.author.name }}" width="56" height="56">
+        {% include 'questions/includes/vote.html' with rating=question.rating %}
+    </div>
+    <div class="question-content">
+        <h2><a href="{% url 'questions:question' question.id %}">{{ question.title }}</a></h2>
+        <p>{{ question.text }}</p>
+        <div class="meta">{{ question.author.name }} · <time datetime="{{ question.created_at|date:'c' }}">{{ question.created_at|date:'d.m.Y H:i' }}</time></div>
+        <div class="card-bottom">
+            <a href="{% url 'questions:question' question.id %}#answers">Ответов: {{ question.answers_count }}</a>
+            <span>{% include 'questions/includes/tags.html' %}</span>
+        </div>
+    </div>
+</article>

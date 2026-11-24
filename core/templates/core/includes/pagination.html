@@ -1,0 +1,25 @@
+{% if page.has_other_pages %}
+<nav aria-label="Страницы">
+    <ul class="pagination flex-wrap">
+        {% if page.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page.previous_page_number }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}" aria-label="Предыдущая страница">←</a>
+            </li>
+        {% endif %}
+        {% for number in page.numbers %}
+            {% if number == page.paginator.ELLIPSIS %}
+                <li class="page-item disabled"><span class="page-link">{{ number }}</span></li>
+            {% elif number == page.number %}
+                <li class="page-item active"><span class="page-link" aria-current="page">{{ number }}</span></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ number }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}">{{ number }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page.next_page_number }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}" aria-label="Следующая страница">→</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}

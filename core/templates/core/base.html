@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <meta content="AskRu — сообщество вопросов и ответов" name="description">
+        <title>{% block title %}AskRu{% endblock %} — AskRu</title>
+        <link href="{% static 'core/img/favicon.svg' %}" rel="icon" type="image/svg+xml">
+        <link href="{% static 'core/css/bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
+        <script defer src="{% static 'core/js/app.js' %}"></script>
+    </head>
+    <body>
+        <a class="skip-link" href="#main">К содержимому</a>
+        {% include "core/includes/header.html" %}
+        <div class="container page-grid">
+            <main id="main">
+                {% block content %}{% endblock %}
+            </main>
+            {% include "core/includes/sidebar.html" %}
+        </div>
+        <footer class="site-footer">
+            <div class="container">AskRu · 2026</div>
+        </footer>
+    </body>
+</html>
