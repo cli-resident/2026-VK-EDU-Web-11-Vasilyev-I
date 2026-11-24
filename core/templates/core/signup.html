@@ -28,13 +28,7 @@
             <div class="form-text" id="nickname-hint">Так вас увидят другие участники.</div>
         </div>
     </div>
-    <div class="field-row">
-        <label for="password">Пароль</label>
-        <div>
-            <input aria-describedby="password-hint" class="form-control" id="password" maxlength="150" minlength="8" name="password" required type="password" value="">
-            <div class="form-text" id="password-hint">Не менее 8 символов.</div>
-        </div>
-    </div>
+    {% include "core/includes/password.html" %}
     <div class="field-row">
         <label for="confirm">Повтор пароля</label>
         <div>

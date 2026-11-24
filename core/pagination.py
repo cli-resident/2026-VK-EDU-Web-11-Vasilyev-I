@@ -1,7 +1,11 @@
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from collections.abc import Sequence
+
+from django.http import HttpRequest
+from django.db.models import QuerySet
+from django.core.paginator import EmptyPage, Page, PageNotAnInteger, Paginator
 
 
-def paginate(objects_list, request, per_page=10):
+def paginate(objects_list: Sequence | QuerySet, request: HttpRequest, per_page: int = 10) -> Page:
     paginator = Paginator(objects_list, per_page)
     number = request.GET.get('page', 1)
 
