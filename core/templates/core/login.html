@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+<h1>Вход</h1>
+<form class="editor-form" method="post" enctype="multipart/form-data" novalidate>
+<input type="hidden" name="next" value="{{ next }}">
+    {% include 'core/includes/form.html' %}
+    <div class="form-action"><button class="btn btn-success" type="submit">Войти</button><a href="{% url 'core:signup' %}">Создать аккаунт</a></div>
+</form>
+{% endblock %}

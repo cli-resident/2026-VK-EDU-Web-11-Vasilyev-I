@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% block title %}Настройки профиля{% endblock %}
+{% block content %}
+<h1>Настройки профиля</h1>
+<form class="editor-form" method="post" enctype="multipart/form-data" novalidate>
+<img class="avatar" src="{{ user.profile.avatar_url }}" alt="Текущий аватар" width="56" height="56">
+    {% include 'core/includes/form.html' %}
+    <div class="form-action"><button class="btn btn-success" type="submit">Сохранить</button></div>
+</form>
+{% endblock %}

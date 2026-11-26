@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:17
+    env_file: .env.docker
+    environment:
+      POSTGRES_DB: ${DB_NAME:-askru}
+      POSTGRES_USER: ${DB_USER:-askru}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env.docker}
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  web:
+    build: .
+    env_file: .env.docker
+    environment:
+      ENV_FILE: .env.docker
+      DB_HOST: db
+      DB_PORT: 5432
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - media:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  database:
+  media:

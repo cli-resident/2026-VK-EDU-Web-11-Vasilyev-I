@@ -1,0 +1,6 @@
+<div class="vote" data-url="{% if kind == 'question' %}{% url 'questions:question_vote' target.pk %}{% else %}{% url 'questions:answer_vote' target.pk %}{% endif %}">
+    <button type="button" data-vote="1" aria-label="Лайк" aria-pressed="{% if target.selected_vote == 1 %}true{% else %}false{% endif %}" {% if not user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>+</button>
+    <output>{{ target.rating }}</output>
+    <button type="button" data-vote="-1" aria-label="Дизлайк" aria-pressed="{% if target.selected_vote == -1 %}true{% else %}false{% endif %}" {% if not user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>−</button>
+</div>
+<p class="vote-error text-danger" role="status"></p>

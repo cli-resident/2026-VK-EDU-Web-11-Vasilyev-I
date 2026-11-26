@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{ question.title }}{% endblock %}
+{% block content %}
+<article class="question-detail">
+    <div class="author-column">
+        <img class="avatar" src="{{ question.author.profile.avatar_url }}" alt="{{ question.author.profile }}" width="56" height="56">
+        {% include 'questions/includes/vote.html' with target=question kind='question' %}
+    </div>
+    <div>
+        <h1>{{ question.title }}</h1>
+        <p>{{ question.text }}</p>
+        <p class="meta">{{ question.author.profile }} · <time datetime="{{ question.created_at|date:'c' }}">{{ question.created_at|date:'d.m.Y H:i' }}</time></p>
+        {% include 'questions/includes/tags.html' %}
+    </div>
+</article>
+<div class="page-heading" id="answers"><h2>Ответов: {{ question.answers_count }}</h2></div>
+{% for answer in page %}
+    {% include 'questions/includes/answer.html' %}
+{% empty %}
+    <p>Ответов пока нет.</p>
+{% endfor %}
+{% include 'core/includes/pagination.html' %}
+{% if user.is_authenticated %}
+<section class="reply">
+    <h2>Ваш ответ</h2>
+    <form class="editor-form" method="post" novalidate>
+        {% include 'core/includes/form.html' %}
+        <button class="btn btn-success" type="submit">Отправить ответ</button>
+    </form>
+</section>
+{% else %}
+<p><a href="{% url 'core:login' %}?next={{ request.get_full_path|urlencode }}">Войдите, чтобы ответить.</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% block title %}Новый вопрос{% endblock %}
+{% block content %}
+<h1>Новый вопрос</h1>
+<form class="editor-form" method="post" enctype="multipart/form-data" novalidate>
+
+    {% include 'core/includes/form.html' %}
+    <div class="form-action"><button class="btn btn-success" type="submit">Опубликовать вопрос</button></div>
+</form>
+{% endblock %}

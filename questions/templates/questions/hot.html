@@ -1,0 +1,9 @@
+{% extends 'core/base.html' %}
+{% block title %}Популярные вопросы{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <h1>Популярные вопросы</h1>
+    <a href="{% url 'questions:index' %}">Новые вопросы</a>
+</div>
+{% include 'questions/includes/list.html' %}
+{% endblock %}
